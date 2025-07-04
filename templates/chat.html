@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MindEase - Mental Health Chatbot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --light-bg: linear-gradient(270deg, #a18cd1, #fbc2eb, #fcd1d1, #c1dfc4, #a1c4fd);
+      --dark-bg: #121212;
+      --text-light: #ffffff;
+      --text-dark: #111111;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--light-bg);
+      background-size: 400% 400%;
+      animation: gradientFlow 15s ease infinite;
+      color: var(--text-dark);
+      transition: background 0.5s, color 0.5s;
+    }
+
+    body.dark-mode {
+      background: var(--dark-bg);
+      color: var(--text-light);
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+      font-size: 2.2rem;
+    }
+
+    #chatbox {
+      margin: 20px auto;
+      width: 80%;
+      max-width: 800px;
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      min-height: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      text-align: left;
+    }
+
+    body.dark-mode #chatbox,
+    body.dark-mode #journal {
+      background-color: #222;
+      color: var(--text-light);
+    }
+
+    .user-message {
+      text-align: right;
+      color: blue;
+    }
+
+    .bot-message {
+      text-align: left;
+      color: black;
+    }
+
+    body.dark-mode .bot-message {
+      color: white;
+    }
+
+    .stress-level {
+      font-weight: bold;
+    }
+
+    .fancy {
+      position: relative;
+      margin: 20px auto;
+      padding: 20px;
+      width: 80%;
+      max-width: 800px;
+      background-color: white;
+      border-radius: 50px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .fancy input {
+      background: transparent;
+      color: inherit;
+      font-size: 1.2rem;
+      border: none;
+      outline: none;
+      width: 100%;
+      padding: 1rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #333;
+      color: white;
+      cursor: pointer;
+      margin: 10px; align-items: center;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    #journal {
+      margin: 20px auto;
+      width: 80%;
+      max-width: 800px;
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      font-size: 1rem;
+      resize: none;
+    }
+
+    .quote-box {
+      background: #fff;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      animation: fadeSlideIn 1s ease-out;
+      font-family: 'Pacifico', cursive;
+      font-size: 1.5rem;
+      color: #444;
+      text-align: center;
+    }
+
+    body.dark-mode .quote-box {
+      background: #333;
+      color: #fff;
+    }
+
+    .toggle-mode {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #444;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 999;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-mode" onclick="toggleMode()">🌓 Toggle Mode</button>
+
+  <div class="quote-box" id="quote-box">
+    You are stronger than you think 💪
+  </div>
+
+  <h1>MindEase - Mental Health Chatbot</h1>
+
+  <div id="chatbox"></div>
+
+  <div class="fancy">
+    <input type="text" id="user-input" placeholder="Type a message...">
+  </div>
+
+  <div style="text-align: center;">
+  <button onclick="sendMessage()">Send</button>
+  <button onclick="startListening()">🎤 Voice Input</button>
+  <button id="mute-toggle">🔈 Mute</button>
+
+</div>
+
+
+  <div id="journal">
+    <h2>Daily Journal</h2>
+    <textarea id="journal-entry" placeholder="Write about your day..."></textarea>
+    <button onclick="saveJournal()">Save Entry</button>
+  </div>
+<div id="journal-history">
+  <h2 style="text-align: center;">🗒️ Previous Journal Entries</h2>
+  <ul id="journal-history-list" style="list-style: none; padding-left: 0;"></ul>
+</div>
+
+    
+
+<script>
+let isMuted = false;
+
+document.getElementById("mute-toggle").addEventListener("click", () => {
+    isMuted = !isMuted;
+    document.getElementById("mute-toggle").textContent = isMuted ? "🔇 Unmute" : "🔈 Mute";
+});
+
+function speakText(text) {
+  if (isMuted) return; // ⛔ Don’t speak if muted
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-US";
+  utterance.pitch = 1;
+  utterance.rate = 1;
+  window.speechSynthesis.speak(utterance);
+}
+
+  async function sendMessage() {
+    let userMessage = document.getElementById("user-input").value.trim();
+    if (!userMessage) return;
+
+    let chatbox = document.getElementById("chatbox");
+    chatbox.innerHTML += `<p class="user-message"><b>You:</b> ${userMessage}</p>`;
+    document.getElementById("user-input").value = "";
+
+    let response = await fetch("/get", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userMessage })
+    });
+
+    let data = await response.json();
+
+    let stressColor = {
+      casual: "green", stress: "orange", crisis: "red",
+      negative: "purple", positive: "blue", neutral: "gray"
+    };
+
+    let emojiMap = {
+      NEUTRAL: "😃", STRESS: "😟", CRISIS: "😢",
+      POSITIVE: "😊", NEGATIVE: "😔", CASUAL: "🙂"
+    };
+
+    chatbox.innerHTML += `
+      <p class="bot-message"><b>Bot:</b> ${data.response || "I'm here for you."}</p>
+      <p class="stress-level" style="color:${stressColor[data.stress_level.toLowerCase()] || "gray"};">
+        <b>Stress Level:</b> ${data.stress_level.toUpperCase()} ${emojiMap[data.stress_level.toUpperCase()] || "🙂"}
+      </p>
+    `;
+    speakText(data.response || "I'm here for you.");
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
+
+  function startListening() {
+    let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "en-US";
+    recognition.start();
+
+    recognition.onresult = function (event) {
+      let userMessage = event.results[0][0].transcript;
+      document.getElementById("user-input").value = userMessage;
+      sendMessage();
+    };
+  }
+
+ function saveJournal() {
+    const entry = document.getElementById("journal-entry").value.trim();
+    if (!entry) return alert("Journal entry cannot be empty!");
+
+    fetch("/journal", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ entry: entry })  // send as JSON
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Failed to save journal entry.");
+      return response.json();
+    })
+    .then(data => {
+      alert(data.message);
+      document.getElementById("journal-entry").value = "";
+      loadJournalHistory(); // refresh entries
+    })
+    .catch(error => {
+      console.error("Error saving journal:", error);
+      alert("Failed to save journal entry.");
+    });
+  }
+
+  function getDailyQuote() {
+    fetch("/daily-quote")
+      .then(response => response.json())
+      .then(data => {
+        const quoteBox = document.getElementById("quote-box");
+        quoteBox.innerText = data.quote;
+      })
+      .catch(() => {
+        document.getElementById("quote-box").innerText = "You are enough. Believe in yourself!";
+      });
+  }
+
+  function toggleMode() {
+    document.body.classList.toggle("dark-mode");
+  }
+
+  function loadJournalHistory() {
+  fetch("/journal/history")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Failed to load journal history.");
+      }
+      return response.json();
+    })
+    .then(data => {
+      const list = document.getElementById("journal-history-list");
+      list.innerHTML = "";
+
+      if (!data.journal_history || data.journal_history.length === 0) {
+        list.innerHTML = "<li>No previous journal entries found.</li>";
+        return;
+      }
+
+      data.journal_history.forEach(entry => {
+        const li = document.createElement("li");
+        li.style.background = "#f9f9f9";
+        li.style.padding = "10px";
+        li.style.marginBottom = "10px";
+        li.style.borderRadius = "8px";
+        li.style.boxShadow = "0 1px 5px rgba(0,0,0,0.1)";
+        li.innerHTML = `
+          <strong>${new Date(entry[2]).toLocaleString()}</strong><br>
+          ${entry[1]}
+          <br>
+          <button onclick="deleteJournal(${entry[0]})">🗑️ Delete</button>
+          <button onclick="hideJournal(${entry[0]})">🙈 Hide</button>
+        `;
+        list.appendChild(li);
+      });
+    })
+    .catch(error => {
+      console.error("Error loading journal history:", error);
+      const list = document.getElementById("journal-history-list");
+      list.innerHTML = "<li style='color: red;'>Failed to load entries.</li>";
+    });
+}
+
+  function deleteJournal(id) {
+  fetch(`/journal/delete/${id}`, {
+    method: "DELETE"
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert(data.message);
+    loadJournalHistory();
+  })
+  .catch(error => {
+    alert("Failed to delete journal entry.");
+    console.error("Error deleting:", error);
+  });
+}
+
+function hideJournal(id) {
+  fetch(`/journal/hide/${id}`, {
+    method: "POST"
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert(data.message);
+    loadJournalHistory();
+  })
+  .catch(error => {
+    alert("Failed to hide journal entry.");
+    console.error("Error hiding:", error);
+  });
+}
+
+</script>
+
+</body>
+</html>

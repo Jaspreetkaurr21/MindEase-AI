@@ -1,0 +1,134 @@
+<!-- templates/journal.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Journal - SereniBot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #ffecd2, #fcb69f);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px 10px;
+            animation: fadeInDown 1s ease-in-out;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        #journal-form {
+            width: 90%;
+            max-width: 700px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            margin-top: 20px;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 1rem;
+            resize: none;
+            background: #f7f7f7;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #66a6ff;
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #4169e1;
+        }
+
+        #response {
+            margin-top: 20px;
+            color: green;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📝 Your Daily Journal</h1>
+    </header>
+
+    <form id="journal-form">
+        <textarea id="entry" placeholder="How was your day? What did you feel? Write it all here..."></textarea>
+        <div style="text-align: center;">
+            <button type="submit">Save Entry</button>
+        </div>
+    </form>
+
+    <div id="response"></div>
+
+    <footer>&copy; 2025 SereniBot. All rights reserved.</footer>
+
+    <script>
+        document.getElementById("journal-form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const entry = document.getElementById("entry").value.trim();
+
+            if (!entry) {
+                document.getElementById("response").innerText = "Please write something first!";
+                return;
+            }
+
+            const res = await fetch("/journal", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ entry })
+            });
+
+            const data = await res.json();
+            document.getElementById("response").innerText = data.message || "Saved!";
+        });
+    </script>
+
+</body>
+</html>
