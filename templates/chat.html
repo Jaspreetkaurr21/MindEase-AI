@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MindEase - Mental Health Chatbot</title>
+  <title>MindEase - Mental Health Companion</title>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -111,7 +111,8 @@
       background-color: #333;
       color: white;
       cursor: pointer;
-      margin: 10px; align-items: center;
+      margin: 10px;
+      align-items: center;
     }
 
     button:hover {
@@ -174,6 +175,56 @@
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    .bot-name-box {
+  text-align: center;
+  margin: 10px auto 20px;
+  padding: 10px;
+  background: #ffffffd0;
+  border-radius: 10px;
+  max-width: 600px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.bot-name-box input {
+  padding: 8px;
+  width: 180px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-left: 10px;
+}
+
+.bot-name-box button {
+  margin-left: 10px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.bot-name-box button:hover {
+  background-color: #555;
+}
+
+.saved-msg {
+  margin-left: 15px;
+  font-size: 0.9rem;
+  color: green;
+  font-weight: bold;
+}
+body.dark-mode input,
+
+body.dark-mode #user-input {
+  background-color: #f5f5f5;       
+  color: #100101;               
+  
+}
+
+
+
   </style>
 </head>
 <body>
@@ -183,7 +234,16 @@
     You are stronger than you think 💪
   </div>
 
-  <h1>MindEase - Mental Health Chatbot</h1>
+  <h1>MindEase - Mental Health Companion</h1>
+
+<div class="bot-name-box">
+  <label for="bot-name">👤 Name your companion:</label>
+  <input type="text" id="bot-name" placeholder="" />
+  <button onclick="saveBotName()">Save</button>
+  <span id="name-status" class="saved-msg"></span>
+</div>
+
+
 
   <div id="chatbox"></div>
 
@@ -192,92 +252,140 @@
   </div>
 
   <div style="text-align: center;">
-  <button onclick="sendMessage()">Send</button>
-  <button onclick="startListening()">🎤 Voice Input</button>
-  <button id="mute-toggle">🔈 Mute</button>
-
-</div>
-
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="startListening()">🎤 Voice Input</button>
+  </div>
 
   <div id="journal">
     <h2>Daily Journal</h2>
     <textarea id="journal-entry" placeholder="Write about your day..."></textarea>
     <button onclick="saveJournal()">Save Entry</button>
   </div>
-<div id="journal-history">
-  <h2 style="text-align: center;">🗒️ Previous Journal Entries</h2>
-  <ul id="journal-history-list" style="list-style: none; padding-left: 0;"></ul>
-</div>
-
-    
+  
+  <div id="journal-history">
+    <h2 style="text-align: center;">🗒️ Previous Journal Entries</h2>
+    <ul id="journal-history-list" style="list-style: none; padding-left: 0;"></ul>
+  </div>
 
 <script>
-let isMuted = false;
+  let customBotName = localStorage.getItem("botName") || "MindEase";
 
-document.getElementById("mute-toggle").addEventListener("click", () => {
-    isMuted = !isMuted;
-    document.getElementById("mute-toggle").textContent = isMuted ? "🔇 Unmute" : "🔈 Mute";
-});
-
-function speakText(text) {
-  if (isMuted) return; // ⛔ Don’t speak if muted
-
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-US";
-  utterance.pitch = 1;
-  utterance.rate = 1;
-  window.speechSynthesis.speak(utterance);
+function saveBotName() {
+  const inputElement = document.getElementById("bot-name");
+  const inputName = document.getElementById("bot-name").value.trim();
+  const status = document.getElementById("name-status");
+  if (inputName) {
+    customBotName = inputName;
+    localStorage.setItem("botName", customBotName);
+    status.textContent = "✅saved!";
+    inputElement.value = ""; 
+    setTimeout(() => { status.textContent = ""; }, 2000);
+  } else {
+    status.textContent = "❌ Please enter a name.";
+    setTimeout(() => { status.textContent = ""; }, 2000);
+  }
+  
 }
 
-  async function sendMessage() {
+
+function loadBotName() {
+  const saved = localStorage.getItem("botName");
+  if (saved) {
+    customBotName = saved;
+    document.getElementById("bot-name").value = saved;
+  }
+  
+}
+
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+async function sendMessage() {
     let userMessage = document.getElementById("user-input").value.trim();
     if (!userMessage) return;
+
+    const userApiKey = localStorage.getItem("userApiKey") || null;
 
     let chatbox = document.getElementById("chatbox");
     chatbox.innerHTML += `<p class="user-message"><b>You:</b> ${userMessage}</p>`;
     document.getElementById("user-input").value = "";
+    chatbox.innerHTML += `<p class="bot-message" id="typing-indicator"><i>${customBotName} is typing...</i></p>`;
 
-    let response = await fetch("/get", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: userMessage })
-    });
+    try {
+      let response = await fetch("/get", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: userMessage,
+          user_api_key: userApiKey
+        })
+      });
 
-    let data = await response.json();
+      document.getElementById("typing-indicator").remove();
+      let data = await response.json();
 
-    let stressColor = {
-      casual: "green", stress: "orange", crisis: "red",
-      negative: "purple", positive: "blue", neutral: "gray"
-    };
+      let stressColor = {
+        casual: "green",
+        stress: "orange",
+        crisis: "red",
+        negative: "purple",
+        positive: "blue",
+        neutral: "gray"
+      };
 
-    let emojiMap = {
-      NEUTRAL: "😃", STRESS: "😟", CRISIS: "😢",
-      POSITIVE: "😊", NEGATIVE: "😔", CASUAL: "🙂"
-    };
+      let emojiMap = {
+        NEUTRAL: "😃",
+        STRESS: "😟",
+        CRISIS: "😢",
+        POSITIVE: "😊",
+        NEGATIVE: "😔",
+        CASUAL: "🙂"
+      };
 
-    chatbox.innerHTML += `
-      <p class="bot-message"><b>Bot:</b> ${data.response || "I'm here for you."}</p>
-      <p class="stress-level" style="color:${stressColor[data.stress_level.toLowerCase()] || "gray"};">
-        <b>Stress Level:</b> ${data.stress_level.toUpperCase()} ${emojiMap[data.stress_level.toUpperCase()] || "🙂"}
-      </p>
-    `;
-    speakText(data.response || "I'm here for you.");
-    chatbox.scrollTop = chatbox.scrollHeight;
+      chatbox.innerHTML += `<p class="bot-message"><b>${customBotName}:</b> ${data.response || "I'm here for you."}</p>
+        <p class="stress-level" style="color:${stressColor[data.stress_level.toLowerCase()] || "gray"};">
+          <b>Stress Level:</b> ${data.stress_level.toUpperCase()} ${emojiMap[data.stress_level.toUpperCase()] || "🙂"}
+        </p>
+      `;
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+    } catch (err) {
+      document.getElementById("typing-indicator").remove();
+      chatbox.innerHTML += `<p class="bot-message"><b>${customBotName}:</b> Sorry, I couldn't connect to the server. Please try again later.</p>`;
+    }
   }
 
   function startListening() {
-    let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = "en-US";
-    recognition.start();
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    recognition.onresult = function (event) {
-      let userMessage = event.results[0][0].transcript;
-      document.getElementById("user-input").value = userMessage;
-      sendMessage();
-    };
+  if (!SpeechRecognition) {
+    alert("Sorry, your browser does not support voice input.");
+    return;
   }
 
- function saveJournal() {
+  const recognition = new SpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.continuous = false;
+
+  recognition.onstart = () => {
+    console.log("🎤 Listening...");
+  };
+
+  recognition.onresult = function (event) {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById("user-input").value = transcript;
+    sendMessage();
+  };
+
+  recognition.onerror = function (event) {
+    console.error("Voice recognition error:", event.error);
+    alert("Voice input failed: " + event.error);
+  };
+
+  recognition.start();
+}
+
+  function saveJournal() {
     const entry = document.getElementById("journal-entry").value.trim();
     if (!entry) return alert("Journal entry cannot be empty!");
 
@@ -286,16 +394,13 @@ function speakText(text) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ entry: entry })  // send as JSON
+      body: JSON.stringify({ entry: entry })
     })
-    .then(response => {
-      if (!response.ok) throw new Error("Failed to save journal entry.");
-      return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
       alert(data.message);
       document.getElementById("journal-entry").value = "";
-      loadJournalHistory(); // refresh entries
+      loadJournalHistory();
     })
     .catch(error => {
       console.error("Error saving journal:", error);
@@ -320,75 +425,67 @@ function speakText(text) {
   }
 
   function loadJournalHistory() {
-  fetch("/journal/history")
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Failed to load journal history.");
-      }
-      return response.json();
-    })
-    .then(data => {
-      const list = document.getElementById("journal-history-list");
-      list.innerHTML = "";
+    fetch("/journal/history")
+      .then(response => response.json())
+      .then(data => {
+        const list = document.getElementById("journal-history-list");
+        list.innerHTML = "";
 
-      if (!data.journal_history || data.journal_history.length === 0) {
-        list.innerHTML = "<li>No previous journal entries found.</li>";
-        return;
-      }
+        if (!data.journal_history || data.journal_history.length === 0) {
+          list.innerHTML = "<li>No previous journal entries found.</li>";
+          return;
+        }
 
-      data.journal_history.forEach(entry => {
-        const li = document.createElement("li");
-        li.style.background = "#f9f9f9";
-        li.style.padding = "10px";
-        li.style.marginBottom = "10px";
-        li.style.borderRadius = "8px";
-        li.style.boxShadow = "0 1px 5px rgba(0,0,0,0.1)";
-        li.innerHTML = `
-          <strong>${new Date(entry[2]).toLocaleString()}</strong><br>
-          ${entry[1]}
-          <br>
-          <button onclick="deleteJournal(${entry[0]})">🗑️ Delete</button>
-          <button onclick="hideJournal(${entry[0]})">🙈 Hide</button>
-        `;
-        list.appendChild(li);
+        data.journal_history.forEach(entry => {
+          const li = document.createElement("li");
+          li.style.background = "#f9f9f9";
+          li.style.padding = "10px";
+          li.style.marginBottom = "10px";
+          li.style.borderRadius = "8px";
+          li.style.boxShadow = "0 1px 5px rgba(0,0,0,0.1)";
+          li.innerHTML = `
+            <strong>${new Date(entry[2]).toLocaleString()}</strong><br>
+            ${entry[1]}
+            <br>
+            <button onclick="deleteJournal(${entry[0]})">🗑️ Delete</button>
+           
+          `;
+          list.appendChild(li);
+        });
+      })
+      .catch(error => {
+        console.error("Error loading journal history:", error);
+        document.getElementById("journal-history-list").innerHTML = "<li style='color: red;'>Failed to load entries.</li>";
       });
-    })
-    .catch(error => {
-      console.error("Error loading journal history:", error);
-      const list = document.getElementById("journal-history-list");
-      list.innerHTML = "<li style='color: red;'>Failed to load entries.</li>";
-    });
-}
+  }
 
   function deleteJournal(id) {
-  fetch(`/journal/delete/${id}`, {
-    method: "DELETE"
-  })
-  .then(response => response.json())
-  .then(data => {
-    alert(data.message);
-    loadJournalHistory();
-  })
-  .catch(error => {
-    alert("Failed to delete journal entry.");
-    console.error("Error deleting:", error);
-  });
-}
+    fetch(`/journal/delete/${id}`, { method: "DELETE" })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+        loadJournalHistory();
+      })
+      .catch(error => {
+        alert("Failed to delete journal entry.");
+        console.error("Error deleting:", error);
+      });
+  }
+  window.onload = loadJournalHistory;
+  window.onload = loadBotName;
+ const userAPIKey = localStorage.getItem("openrouter_api_key");
 
-function hideJournal(id) {
-  fetch(`/journal/hide/${id}`, {
-    method: "POST"
+fetch("/get", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    message: userMessage,
+    user_api_key: userAPIKey || ""  
   })
-  .then(response => response.json())
-  .then(data => {
-    alert(data.message);
-    loadJournalHistory();
-  })
-  .catch(error => {
-    alert("Failed to hide journal entry.");
-    console.error("Error hiding:", error);
-  });
-}
+});
+
 
 </script>
 

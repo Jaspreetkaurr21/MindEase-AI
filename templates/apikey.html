@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Enter API Key – MindEase</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      background: linear-gradient(to right, #89f7fe, #66a6ff);
+      font-family: 'Segoe UI', sans-serif;
+      color: #333;
+      text-align: center;
+      padding: 40px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 20px rgba(0,0,0,0.1);
+    }
+    input[type="text"] {
+      width: 90%;
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .instructions {
+      text-align: left;
+      font-size: 15px;
+      margin-top: 25px;
+    }
+    .instructions a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+    .instructions a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔑 Enter Your OpenRouter API Key</h2>
+
+    <input type="text" id="bot-api-key" placeholder="Enter your API key here">
+    <br>
+    <button onclick="saveAPIKey()">Save API Key</button>
+    <div id="api-status" class="status"></div>
+
+    <div class="instructions">
+      <h3>ℹ️ Why add your API key?</h3>
+      <p>
+        This is <strong>optional</strong>. You can use the built-in free API key (with limited access) or use your own for uninterrupted responses.
+      </p>
+
+      <h3>📋 Steps to get your own API key:</h3>
+      <ol>
+        <li>Visit <a href="https://openrouter.ai" target="_blank">openrouter.ai</a> and sign in.</li>
+        <li>Go to <a href="https://openrouter.ai/keys" target="_blank">Your API Keys</a> section.</li>
+        <li>Click on <strong>"Create new key"</strong>.</li>
+        <li>Copy the key and paste it above.</li>
+        <li>⚠️This chatbot is designed to work best with the deepseek-chat or other multilingual models (like OpenChat, Nous Hermes). Please ensure your key has access to a multilingual model.
+Otherwise, replies may only be in English.</li>
+      </ol>
+      <p>You can return to <a href="/chat">chat page</a> after saving the key.</p>
+    </div>
+    <p><b>Note:</b> This chatbot currently supports API keys from <a href="https://openrouter.ai" target="_blank">OpenRouter.ai</a> only. Keys from other providers (e.g., OpenAI, Gemini) are not compatible yet.</p>
+
+  </div>
+
+  <script>
+    function saveAPIKey() {
+      const key = document.getElementById("bot-api-key").value.trim();
+      const status = document.getElementById("api-status");
+
+      if (key) {
+        localStorage.setItem("userApiKey", key);
+        document.getElementById("bot-api-key").value = "";
+        status.textContent = "✅ API Key saved successfully!";
+        status.style.color = "green";
+        setTimeout(() => status.textContent = "", 3000);
+      } else {
+        status.textContent = "❌ Please enter a valid API key.";
+        status.style.color = "red";
+        setTimeout(() => status.textContent = "", 3000);
+      }
+    }
+  </script>
+</body>
+</html>
