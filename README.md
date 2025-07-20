@@ -1,64 +1,85 @@
-
 # 🧠 MindEase — Your Personal Mental Health Companion
 
-Welcome to **MindEase**, a mental health chatbot built using Flask and AIML, designed to help users track their feelings, manage stress, and express themselves freely through journaling and daily affirmations.
+Welcome to **MindEase**, an AI-powered mental health web app built using **Flask** and integrated with **OpenRouter's LLMs** like OpenChat and DeepSeek. It helps users talk to AI, manage stress, journal thoughts, and receive daily affirmations — all through a beautiful interface.
 
-I created this project as a way to combine technology and empathy — to provide a space where anyone can talk, reflect, and feel heard. 💙
+This project combines **technology and empathy** to offer users a calming and safe space to reflect, express, and heal. 💙
 
 ---
 
 ## ✨ Features
 
-- 🗨️ **Chat Interface** powered by AIML (Artificial Intelligence Markup Language)
-- 🧠 **Stress Level Detection** using keywords and sentiment analysis
-- 📝 **Daily Journaling** with view, edit, delete, hide/unhide support
-- 💬 **Voice Input** support using Speech Recognition
-- 🌈 **Daily Affirmations** to keep you going
-- 🎨 Beautiful UI with animated background and theme toggle
-- 🔐 **Login & Signup Authentication** (email + password)
+- 💬 **AI Chat Interface** (powered by OpenRouter)
+- 🧠 **Stress Level Detection** using keyword and sentiment analysis
+- 📓 **Journal Entries** with create, edit, delete
+- 🎙️ **Voice Input** using Web Speech API
+- 🌞 **Daily Affirmations or Quotes**
+- 🌈 **Animated Gradient UI** with Dark/Light Theme Toggle
+- 🔐 **Login & Signup** with email/password authentication
+- 🔑 **User API Key Input** (OpenRouter API key via frontend)
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer         | Technology                    |
-|--------------|-------------------------------|
-| Backend       | Flask, AIML, SQLite, TextBlob |
-| Frontend      | HTML, CSS, JavaScript         |
-| Voice Input   | Web Speech API (Browser)      |
-| Styling       | Custom CSS + Gradient Effects |
-| Deployment    | Localhost (Flask server)      |
+| Layer           | Technology                          |
+|----------------|-------------------------------------|
+| Backend         | Flask, SQLite, TextBlob             |
+| AI Integration  | OpenRouter API (e.g. OpenChat 3.6)  |
+| Frontend        | HTML, CSS, JavaScript               |
+| Voice Input     | Web Speech API                      |
+| Authentication  | Flask Login                         |
+| Styling         | CSS with Animated Gradients         |
 
 ---
 
-## 🚀 How to Run Locally
+## 🚀 Getting Started (Local Setup)
 
-1. **Clone this repository**
+Follow the steps below to run the project on your system:
+
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/mental-health-chatbot.git
+git clone https://github.com/Jaspreetkaurr21/mental-health-chatbot.git
 cd mental-health-chatbot
+
 ```
+### 2.Create and Activate a Virtual Environment
+For windpws:
+python -m venv env
+env\Scripts\activate
 
-2. **Install dependencies**
+For macOS/Linux:
+python3 -m venv env
+source env/bin/activate
 
-```bash
+### 3.Install Dependencies
 pip install -r requirements.txt
-```
 
-3. **Run the Flask app**
-
-```bash
+### 4.Run the Flask App
 python app.py
-```
 
-4. **Visit in browser**
+### 5.Open in browser
+Visit: http://127.0.0.1:5000
 
-Go to `http://127.0.0.1:5000/` in your browser.
+## Folder Structure
+mental-health-chatbot/
+│
+├── static/
+│   └── images/
+│
+├── templates/
+│   ├── index.html
+│   ├── chat.html
+│   ├── journal.html
+│   ├── login.html
+│   ├── signup.html
+│   └── apikey.html
+│
+├── app.py
+├── requirements.txt
+└── README.md
 
----
 ## 🖼️ Screenshots
-
 ### 🏠 Home Page
 ![Home](screenshots/home.jpg)
 
@@ -68,49 +89,33 @@ Go to `http://127.0.0.1:5000/` in your browser.
 ### 📓 Journal Page
 ![Journal](screenshots/journal.jpg)
 
-### 🔐 Login / Signup
+### API key
+![api](screenshots/api.jpg)
+
+### Login page
 ![Login](screenshots/login.jpg)
 
+## 💡 Why I Built MindEase
 
-## 🧘‍♀️ Why I Built MindEase
 
-Mental health is something I care deeply about. I wanted to create a space where users could:
+Mental health is personal and important. I wanted to create a space where users can:
 
-* Talk freely (even with voice)
-* Track their emotions and stress
-* Write down their feelings in a private journal
-* Get a little motivation every day 🌻
+-Talk to AI without judgment
 
-This is my attempt to mix **compassion with code** 💻💖
+-Track stress and emotions
 
----
+-Maintain a private journal
 
-## 📁 Folder Structure
+-Get small doses of positivity daily 🌻
 
-```
-├── static/
-|         
-│  └── images/
-├── templates/
-│   ├── index.html
-│   ├── chat.html
-│   ├── login.html
-│   └── signup.html
-├── app.py
-├── requirements.txt
-└── README.md
-```
-
----
+-This is my way of blending compassion and code to help others. 💻💖
 
 ## 🙋‍♀️ About Me
+Hi! I'm Jaspreet Kaur, a third year B.Tech student at NIT Jalandhar passionate about building tech that truly helps people.
 
-Hi! I'm Jaspreet Kaur, and I'm passionate about building meaningful tech.
-Feel free to connect if you’d like to collaborate or talk mental health & development. ✨
+💼 GitHub:[ @Jaspreetkaurr21](https://github.com/Jaspreetkaurr21)
+💬 LinkedIn: [Jaspreet Kaur](https://www.linkedin.com/in/jaspreet-kaur-209088299/)
 
-Github: https://github.com/Jaspreetkaurr21/
-LinkedIn: https://www.linkedin.com/in/jaspreet-kaur-209088299/
----
-
-
-
+## 📢 Note
+This project is fully AI-powered.
+It uses OpenRouter's LLM APIs, and users can securely enter their own API key directly on the frontend.
