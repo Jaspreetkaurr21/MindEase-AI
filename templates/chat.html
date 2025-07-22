@@ -5,279 +5,227 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MindEase - Mental Health Companion</title>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
   <style>
-    :root {
-      --light-bg: linear-gradient(270deg, #a18cd1, #fbc2eb, #fcd1d1, #c1dfc4, #a1c4fd);
-      --dark-bg: #121212;
-      --text-light: #ffffff;
-      --text-dark: #111111;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: var(--light-bg);
-      background-size: 400% 400%;
-      animation: gradientFlow 15s ease infinite;
-      color: var(--text-dark);
-      transition: background 0.5s, color 0.5s;
-    }
-
-    body.dark-mode {
-      background: var(--dark-bg);
-      color: var(--text-light);
-    }
-
-    @keyframes gradientFlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    h1 {
-      text-align: center;
-      padding: 20px;
-      margin: 0;
-      font-size: 2.2rem;
-    }
-
-    #chatbox {
-      margin: 20px auto;
-      width: 80%;
-      max-width: 800px;
-      background-color: #fff;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      min-height: 300px;
-      max-height: 400px;
-      overflow-y: auto;
-      text-align: left;
-    }
-
-    body.dark-mode #chatbox,
-    body.dark-mode #journal {
-      background-color: #222;
-      color: var(--text-light);
-    }
-
-    .user-message {
-      text-align: right;
-      color: blue;
-    }
-
-    .bot-message {
-      text-align: left;
-      color: black;
-    }
-
-    body.dark-mode .bot-message {
-      color: white;
-    }
-
-    .stress-level {
-      font-weight: bold;
-    }
-
-    .fancy {
-      position: relative;
-      margin: 20px auto;
-      padding: 20px;
-      width: 80%;
-      max-width: 800px;
-      background-color: white;
-      border-radius: 50px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .fancy input {
-      background: transparent;
-      color: inherit;
-      font-size: 1.2rem;
-      border: none;
-      outline: none;
-      width: 100%;
-      padding: 1rem;
-      position: relative;
-      z-index: 10;
-    }
-
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      background-color: #333;
-      color: white;
-      cursor: pointer;
-      margin: 10px;
-      align-items: center;
-    }
-
-    button:hover {
-      background-color: #555;
-    }
-
-    #journal {
-      margin: 20px auto;
-      width: 80%;
-      max-width: 800px;
-      background-color: #fff;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    textarea {
-      width: 100%;
-      height: 150px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 10px;
-      font-size: 1rem;
-      resize: none;
-    }
-
-    .quote-box {
-      background: #fff;
-      margin: 20px auto;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      max-width: 800px;
-      animation: fadeSlideIn 1s ease-out;
-      font-family: 'Pacifico', cursive;
-      font-size: 1.5rem;
-      color: #444;
-      text-align: center;
-    }
-
-    body.dark-mode .quote-box {
-      background: #333;
-      color: #fff;
-    }
-
-    .toggle-mode {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #444;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 999;
-    }
-
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .bot-name-box {
-  text-align: center;
-  margin: 10px auto 20px;
-  padding: 10px;
-  background: #ffffffd0;
-  border-radius: 10px;
-  max-width: 600px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.bot-name-box input {
-  padding: 8px;
-  width: 180px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-left: 10px;
-}
-
-.bot-name-box button {
-  margin-left: 10px;
-  padding: 8px 12px;
-  font-size: 0.9rem;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.bot-name-box button:hover {
-  background-color: #555;
-}
-
-.saved-msg {
-  margin-left: 15px;
-  font-size: 0.9rem;
-  color: green;
-  font-weight: bold;
-}
-body.dark-mode input,
-
-body.dark-mode #user-input {
-  background-color: #f5f5f5;       
-  color: #100101;               
-  
-}
-@media screen and (max-width: 768px) {
-  h1 {
-    font-size: 1.8rem;
-    padding: 15px;
+  :root {
+    --light-bg: linear-gradient(270deg, #a18cd1, #fbc2eb, #fcd1d1, #c1dfc4, #a1c4fd);
+    --dark-bg: #121212;
+    --text-light: #ffffff;
+    --text-dark: #111111;
   }
 
-  .fancy, #chatbox, #journal, .quote-box, .bot-name-box {
-    width: 95%;
-    padding: 15px;
-    font-size: 1rem;
+  body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--light-bg);
+    background-size: 400% 400%;
+    animation: gradientFlow 15s ease infinite;
+    color: var(--text-dark);
+    transition: background 0.5s, color 0.5s;
+  }
+
+  body.dark-mode {
+    background: var(--dark-bg);
+    color: var(--text-light);
+  }
+
+  @keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  h1 {
+    text-align: center;
+    padding: 20px;
+    font-size: 2.2rem;
+    margin: 0;
+  }
+
+  #chatbox, #journal, .quote-box, .fancy, .bot-name-box {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  }
+
+  #chatbox {
+    min-height: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  body.dark-mode #chatbox,
+  body.dark-mode #journal,
+  body.dark-mode .fancy,
+  body.dark-mode .quote-box,
+  body.dark-mode .bot-name-box {
+    background-color: #222;
+    color: var(--text-light);
+  }
+
+  .user-message {
+    text-align: right;
+    color: blue;
+  }
+
+  .bot-message {
+    text-align: left;
+    color: black;
+  }
+
+  body.dark-mode .bot-message {
+    color: white;
+  }
+
+  .stress-level {
+    font-weight: bold;
   }
 
   .fancy input {
-    font-size: 1rem;
-    padding: 0.8rem;
+    background: transparent;
+    color: inherit;
+    font-size: 1.1rem;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 1rem;
   }
 
-  button, .bot-name-box button {
-    width: 100%;
-    font-size: 1rem;
-    margin: 8px 0;
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    margin: 8px 5px;
   }
 
-  .bot-name-box input {
-    width: 100%;
-    margin: 8px 0;
+  button:hover {
+    background-color: #555;
   }
 
   textarea {
-    height: 120px;
+    width: 100%;
+    height: 150px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
     font-size: 1rem;
-  }
-
-  .toggle-mode {
-    top: 15px;
-    right: 15px;
-    padding: 6px 10px;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  h1 {
-    font-size: 1.5rem;
+    resize: none;
   }
 
   .quote-box {
-    font-size: 1.2rem;
-    padding: 10px;
+    font-family: 'Pacifico', cursive;
+    font-size: 1.5rem;
+    text-align: center;
+    animation: fadeSlideIn 1s ease-out;
+    color: #444;
+  }
+
+  .toggle-mode {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    background: #444;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 999;
+  }
+
+  .bot-name-box {
+    text-align: center;
+  }
+
+  .bot-name-box input {
+    padding: 8px;
+    width: 180px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-left: 10px;
+  }
+
+  .bot-name-box button {
+    margin-left: 10px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border-radius: 6px;
   }
 
   .saved-msg {
-    font-size: 0.85rem;
+    margin-left: 15px;
+    font-size: 0.9rem;
+    color: green;
+    font-weight: bold;
   }
-}
 
-  </style>
+  body.dark-mode input,
+  body.dark-mode #user-input,
+  body.dark-mode textarea {
+    background-color: #f5f5f5;
+    color: #100101;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    h1 {
+      font-size: 1.8rem;
+      padding: 15px;
+    }
+
+    .fancy input {
+      font-size: 1rem;
+      padding: 0.8rem;
+    }
+
+    button, .bot-name-box button {
+      width: 100%;
+      font-size: 1rem;
+      margin: 8px 0;
+    }
+
+    .bot-name-box input {
+      width: 100%;
+      margin: 8px 0;
+    }
+
+    textarea {
+      height: 120px;
+      font-size: 1rem;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .quote-box {
+      font-size: 1.2rem;
+      padding: 10px;
+    }
+
+    .saved-msg {
+      font-size: 0.85rem;
+    }
+  }
+</style>
+
 </head>
 <body>
   <button class="toggle-mode" onclick="toggleMode()">🌓 Toggle Mode</button>
