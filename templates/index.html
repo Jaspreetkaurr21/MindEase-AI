@@ -125,7 +125,6 @@
             100% { transform: translateY(0); opacity: 0.5; }
         }
 
-        /* Floating background circles */
         .circle {
             position: absolute;
             border-radius: 50%;
@@ -156,7 +155,59 @@
             left: 20%;
             animation-delay: 4s;
         }
-    </style>
+ @media screen and (max-width: 768px) {
+  header h1 {
+    font-size: 2rem;
+  }
+
+  header p {
+    font-size: 1rem;
+  }
+
+  .quote-box {
+    font-size: 1rem;
+    padding: 12px 20px;
+  }
+
+  .buttons {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .buttons a {
+    width: 80%;
+    padding: 12px;
+    font-size: 1rem;
+  }
+
+  .illustration img {
+    width: 80%;
+  }
+
+  footer {
+    font-size: 0.8rem;
+    margin-bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  header h1 {
+    font-size: 1.7rem;
+  }
+
+  .quote-box {
+    font-size: 0.95rem;
+  }
+
+  .buttons a {
+    width: 100%;
+  }
+
+  .illustration img {
+    width: 100%;
+  }
+}
+ </style>
 </head>
 <body>
 

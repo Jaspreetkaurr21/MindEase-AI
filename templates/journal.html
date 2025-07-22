@@ -3,6 +3,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Daily Journal - MindEase</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -90,6 +92,57 @@
             font-size: 0.9rem;
             color: #555;
         }
+@media screen and (max-width: 768px) {
+  header h1 {
+    font-size: 2rem;
+  }
+
+  #journal-form {
+    padding: 20px;
+    border-radius: 15px;
+  }
+
+  textarea {
+    height: 180px;
+    font-size: 0.95rem;
+    padding: 12px;
+  }
+
+  button {
+    width: 100%;
+    font-size: 1rem;
+    padding: 12px;
+  }
+
+  #response {
+    font-size: 0.95rem;
+  }
+
+  footer {
+    font-size: 0.8rem;
+    padding: 15px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  header h1 {
+    font-size: 1.8rem;
+  }
+
+  textarea {
+    height: 160px;
+    font-size: 0.9rem;
+  }
+
+  button {
+    font-size: 0.95rem;
+  }
+
+  #journal-form {
+    margin-top: 15px;
+  }
+}
+
     </style>
 </head>
 <body>
