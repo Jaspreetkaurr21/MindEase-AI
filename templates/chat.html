@@ -224,41 +224,44 @@
       font-size: 0.85rem;
     }
   }
-  .toggle-mode-btn {
+  #toggle-mode {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  background-color: rgba(50, 50, 50, 0.85);
-  color: white;
+  top: 15px;
+  right: 15px;
   padding: 10px 18px;
-  border-radius: 25px;
-  font-weight: 600;
   font-size: 0.9rem;
+  font-weight: 600;
   border: none;
-  z-index: 999;
+  border-radius: 25px;
+  background-color: rgba(40, 40, 40, 0.85);
+  color: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
+  z-index: 1000;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.toggle-mode-btn:hover {
-  background-color: rgba(30, 30, 30, 1);
+#toggle-mode:hover {
+  background-color: rgba(20, 20, 20, 1);
   cursor: pointer;
+  transform: scale(1.05);
 }
 
-@media screen and (max-width: 600px) {
-  .toggle-mode-btn {
-    top: 15px;
-    right: 15px;
+@media (max-width: 600px) {
+  #toggle-mode {
     font-size: 0.8rem;
     padding: 8px 14px;
+    top: 10px;
+    right: 10px;
   }
 }
+
 
 </style>
 
 </head>
 <body>
- <button class="toggle-mode-btn" onclick="toggleDarkMode()">🌓 Toggle Mode</button>
+<button id="toggle-mode" onclick="toggleDarkMode()">🌓 Toggle Mode</button>
+
 
 
   <div class="quote-box" id="quote-box">
@@ -451,9 +454,10 @@ async function sendMessage() {
       });
   }
 
-  function toggleMode() {
-    document.body.classList.toggle("dark-mode");
-  }
+ function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+}
+
 
   function loadJournalHistory() {
     fetch("/journal/history")
