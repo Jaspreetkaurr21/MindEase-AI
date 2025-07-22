@@ -6,4 +6,3 @@ textblob==0.17.1
 nltk==3.8.1
 SpeechRecognition==3.10.0
 gunicorn
-python==3.10.13
