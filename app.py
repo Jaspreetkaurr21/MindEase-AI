@@ -1,4 +1,9 @@
+
+
 from flask import Flask, render_template, request, jsonify, session, redirect
+import sys
+print("🐍 Python version:", sys.version)
+
 
 import os
 from dotenv import load_dotenv
